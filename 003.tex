@@ -1,0 +1,139 @@
+﻿\section{产品与服务}
+本节将对核心产品——基于MicroPython的PYBoard开发板进行详细的原理说明.
+\subsection{研究开发}
+\subsubsection{产品描述}
+MicroPython是包括的Python标准库，并可在微控制器和约束环境下实现优化运行的精干高效的Python的编程语言.
+MicroPython兼容性优良，可以让用户将代码从电脑易于移植进单片机或嵌入系统.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=12cm]{3.0.jpg}
+\caption{MicroPython}
+\label{MicroPython}
+\end{figure}
+
+用户通过MicroPython可以轻松实现对微控制器的控制，不需要通过复杂的编程，可直接通过MicroPython脚本语言进行操作.
+不同于传统的微控制器控制需要重新修改、编译、上传程序，MicroPython脚本语言可实现实时的操作，去掉繁琐的流程，操作更加简单化.
+用户完全可以通过MicroPython语言实现硬件底层的访问和控制，比如说控制LED 灯泡、LCD 显示器、读取电压、控制电机、访问SD卡等.
+由于MicroPython的简约特性，用户完全可以在学习脚本语言的同时，进行个人兴趣DIY制作，减少了学习时间和成本，增强了编程的体验感，在最短时间内看到学习成果的体现.
+
+以Otto机器人为例，借助MicroPython平台，用户可以自主设计小型玩具机器人，简单且易于操作，互动性和趣味性较强。
+
+\begin{figure}[H]
+\centering
+\subfigure[]{
+\begin{minipage}{7.5cm}
+\centering
+\includegraphics[width=7.5cm]{3_otto01.jpg}
+\hspace{1cm}                        
+\end{minipage}%
+}%
+\subfigure[]{
+\begin{minipage}{7.5cm}
+\centering
+\includegraphics[width=7.5cm]{3_otto02.jpg}
+\hspace{1cm}
+\end{minipage}%
+}%
+\caption{基于MicroPython的Otto机器人}
+\label{基于MicroPython的Otto机器人}
+\end{figure}
+
+\subsubsection{产品原理}
+\begin{enumerate}[(1)]
+\item MicroPython编译原理
+
+      单片机的编程环境默认为C语言。目前在单片机业内有两种编译机制，主流是以Arduino为代表的AVR16单片机编译机制：
+
+     \begin{figure}[H]
+     \centering
+     \includegraphics[width=12cm]{3_Cbin.pdf}
+     \caption{基于C++的单片机编译机制}
+     \label{基于C++的单片机编译机制}
+     \end{figure}
+
+     而借助python语言编译过程中虚拟机(VM-Visual Machine)的特性，可以使编译速度大大加快。python更偏向解释型语言，虚拟机即为Python 的解释器，模拟可执行程序X86机器上的运行，像CPU一样将字节码一条一条的执行。
+
+      \begin{figure}[H]
+      \centering
+      \includegraphics[width=12cm]{3_Pbin.pdf}
+      \caption{基于MicroPython的单片机编译机制}
+      \label{基于MicroPython的单片机编译机制}
+      \end{figure}
+
+      C语言对于普通用户来说，学习成本是较大的。而Python语言需要在PC或者其他嵌入式linux平台才可以运行，在单片机，比如说STM32，是不可运行的。所以MicroPython的出现，综合了单片机使用C语言的局限和Python的简单性，帮助用户解决了这个问题。MicroPython为面向对象的语言，将用户界面输入的python语句进行封装，利用VM虚拟机实时转换为单片机可识别的*.bin文件，使得python语言可在例如STM32之类的单片机上运行。
+      
+\item PYboard运行原理
+
+      PYboard是MicroPython官方单片机支持电路板，编程环境为MicroPython。PYboard基于STM32F405RG微控制器，通过板载的microUSB接口供电以及进行数据传输，板载外设包括了一个MicroSD卡座接口、4个LED灯、两个机械按键、一个加速传感器、时钟模块，其它外设信号都通过板子上的金属通孔引出，具体的信号定义可以参考下图。
+      
+      \begin{figure}[H]
+      \centering
+      \includegraphics[width=12cm]{3_pyboard.jpg}
+      \caption{PYboard信号输出}
+      \label{PYboard信号输出}
+      \end{figure}
+      
+      以STM32单片机为例，通过MicroUSB线连接上电脑后，设备管理器出现了一个需要安装驱动的虚拟串口，从电脑中看到pyboard的U盘。U盘中的有几个重要的文件boot.py、main.py、pybcdc.inf。若板子正常启动，上电先会运行boot.py，然后再配置USB，最后运行main.py。其中pybcdc是需要安装的驱动。
+      
+      \begin{figure}[H]
+      \centering
+      \includegraphics[width=12cm]{3_upan.jpg}
+      \caption{U盘中的文件}
+      \label{U盘中的文件}
+      \end{figure}
+      
+      此时，将{\bf{MicroSD卡}}插入上电，pyboard会默认{\bf{从SD卡启动}}来代替原本的微控制器中的ROM中启动。
+      
+      \begin{figure}[H]
+      \centering
+      \includegraphics[width=12cm]{3_sd.jpg}
+      \caption{最终连接状态}
+      \label{最终连接状态}
+      \end{figure}
+      
+      在SD卡中，通过使用python语言编辑main.py文件，添加相应脚本代码，就可以实现上电即运行程序的操作。
+\end{enumerate}
+
+
+\subsubsection{未来产品与规划}
+\begin{enumerate}[(1)]
+
+\item 初期产品
+
+      初期团队规模较小、技术水平不够高、资金资源有限，在满足用户核心需求的基础上，将进行主要的功能实现.同时，为践行“创新”与“颠覆”的产品理念，初期产品的主要任务在于带来全新的用户使用体验，从而建立品牌效应，为中后期产品的推出打好基础.在单片机市场逐渐被Arduino平台占领，且同期无其他替代产品出现时，MicroPython的出现是极具颠覆性的.
+
+      基于以上考虑，初期产品主要偏向于采用MicroPython平台的开发，建立自身的python库，为用户建立强大的代码支持，提升自身信誉度.
+
+\item 中期产品
+
+      在得到稳定市场份额、确定目标人群、积累品牌效应的基础上，中期产品将更多地体现智能化设计，在中端产品中争取更大的话语权.中期产品将对初期产品进行优化升级，在硬件方面针对用户反馈与售后信息进行修正改动，在软件方面进行功能拓展与性能提升.在保证系列产品较小的价位浮动的前提下，尽量提升用户体验，扩大目标人群数量.
+
+      基于以上考虑，中期产品可以考虑加入单片机生态链以及创客教育，与国内几大创客品牌教育达成合作，一方面获取更多的用户需求的资料后，可以对不同需求，例如信息安全方向的wifi欺骗器，及时扩充python库；一方面利用自身优势扩大市场，与arduino平台达成良性竞争。
+
+\item 终期产品
+
+      在经过初期和中期产品的多层迭代后，MicroPython平台已日趋完善。此时可以考虑利用周边效应，建立自身创客教育品牌——极客教育.将前期所有研发成果转变成线上线下课堂的形式，加入新媒体模式，与MicroPython平台相辅相成，融入国内STEM生态圈。
+
+\end{enumerate}
+
+\subsection{资金需求}
+
+
+
+\subsection{服务支持}
+
+\begin{enumerate}[(1)]
+\item PYboard安装
+
+      随产品会配发相应说明书，网站上放置链接以供用户参考。
+
+\item Python脚本语言编写
+
+      MicroPython平台提供基本案例和教程。用户还可以在GitHub平台上与其他用户交流，查看其他用户编写的代码。
+      \url{https://github.com/micropython}
+
+\item 官方售后中心
+
+      设立专门的组织结构，选派业务素质高、责任心强的人员负责售后管理，实施定人、定责、定任务、定范围的岗位责任制.讨论建立定期巡回制度、质量跟踪制度、定期座谈会制度、来访接待制度、零配件供应制度、“包退、包换、包修”制度、销售档案制度等，明确服务职责，规范服务行为，完善服务流程.
+\end{enumerate}
